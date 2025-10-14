@@ -9,23 +9,24 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.51.3",
     "axios": "^1.7.2",
     "dayjs": "^1.11.10",
+    "leaflet": "^1.9.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.52.1",
-    "zod": "^3.23.8",
-    "@tanstack/react-query": "^5.51.3",
+    "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.26.2",
     "react-toastify": "^10.0.5",
-    "leaflet": "^1.9.4",
-    "react-leaflet": "^4.2.1"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/leaflet": "^1.9.12",
     "@types/react": "^18.2.79",
     "@types/react-dom": "^18.2.25",
+    "@vitejs/plugin-react": "^5.0.4",
     "typescript": "^5.5.3",
-    "vite": "^5.4.1",
-    "@types/leaflet": "^1.9.12"
+    "vite": "^7.1.9"
   }
 }
