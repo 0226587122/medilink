@@ -1,30 +1,17 @@
 import { useMedications, useCreateMedication } from '../api/queries'
-import { useState } from 'react'
-
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+const MedSchema=z.object({ name:z.string().min(1,'Required'), dose:z.string().min(1,'Required'), frequency:z.string().min(1,'Required'), start_date:z.string().min(1,'Required') })
 export default function Medications(){
-  const { data } = useMedications()
-  const create = useCreateMedication()
-  const [form, setForm] = useState({ name:'', dose:'', frequency:'', start_date:'' })
-
-  const submit = () => {
-    if(!form.name || !form.dose || !form.frequency || !form.start_date) return
-    create.mutate(form as any)
-    setForm({ name:'', dose:'', frequency:'', start_date:'' })
-  }
-
-  return (
-    <div style={{padding:24}}>
-      <h2>My Medications</h2>
-      <ul>{data?.map(m => <li key={m.id}>{m.name} — {m.dose} — {m.frequency}</li>)}</ul>
-      <hr />
-      <h3>Add Medication</h3>
-      <div style={{display:'grid', gap:8, maxWidth:400}}>
-        <input placeholder="Name" value={form.name} onChange={e=>setForm(f=>({...f, name:e.target.value}))} />
-        <input placeholder="Dose (e.g., 5 mg)" value={form.dose} onChange={e=>setForm(f=>({...f, dose:e.target.value}))} />
-        <input placeholder="Frequency (e.g., 2x/day)" value={form.frequency} onChange={e=>setForm(f=>({...f, frequency:e.target.value}))} />
-        <input type="date" value={form.start_date} onChange={e=>setForm(f=>({...f, start_date:e.target.value}))} />
-        <button onClick={submit}>Save</button>
-      </div>
-    </div>
-  )
-}
+  const { data }=useMedications(); const create=useCreateMedication()
+  const { register, handleSubmit, reset, formState:{errors} }=useForm({ resolver:zodResolver(MedSchema) })
+  const onSubmit=(val:any)=>create.mutate(val as any,{ onSuccess:()=>reset() })
+  return (<div className="container"><div className="grid cols-2">
+    <div className="card"><h3 style={{marginTop:0,color:'var(--blue)'}}>My Medications</h3><ul className="list">{data?.map(m=><li key={m.id}><b>{m.name}</b> — {m.dose} — {m.frequency}</li>)}</ul></div>
+    <div className="card"><h3 style={{marginTop:0,color:'var(--blue)'}}>Add Medication</h3>
+      <form onSubmit={handleSubmit(onSubmit)} className="grid"><div><div className="label">Name</div><input className="input" {...register('name')} />{errors.name && <small style={{color:'crimson'}}>{String(errors.name.message)}</small>}</div>
+      <div><div className="label">Dose</div><input className="input" {...register('dose')} />{errors.dose && <small style={{color:'crimson'}}>{String(errors.dose.message)}</small>}</div>
+      <div><div className="label">Frequency</div><input className="input" {...register('frequency')} />{errors.frequency && <small style={{color:'crimson'}}>{String(errors.frequency.message)}</small>}</div>
+      <div><div className="label">Start Date</div><input className="input" type="date" {...register('start_date')} />{errors.start_date && <small style={{color:'crimson'}}>{String(errors.start_date.message)}</small>}</div>
+      <button className="btn" type="submit">Save</button></form></div></div></div>) }
